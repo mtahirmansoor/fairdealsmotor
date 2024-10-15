@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaTiktok } from "react-icons/fa";
-import {FaXTwitter} from 'react-icons/fa6' // Use FaTwitter for X (formerly Twitter)
+import { FaXTwitter } from "react-icons/fa6"; // Use FaTwitter for X (formerly Twitter)
 import Logo from "../assets/Logo/Logow.png";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,15 +33,12 @@ const Navbar = () => {
         {/* Links for larger screens */}
         <div className="hidden md:flex">
           <ul className="flex list-none gap-7">
-            <Link to="/" className="hover:text-blue-300">
-              Home
-            </Link>
             <Link to="/stock" className="hover:text-blue-300">
               Stock
             </Link>
             <Link to="/finance" className="hover:text-blue-300">
-            Finance
-          </Link>
+              Finance
+            </Link>
             <Link to="/contact" className="hover:text-blue-300">
               Contact
             </Link>
@@ -149,9 +146,6 @@ const Navbar = () => {
       {/* Mobile Sidebar (Menu) - Show when isOpen is true */}
       {isOpen && (
         <div className="flex flex-col gap-4 md:p-4 ">
-          <Link to="/" className="hover:text-blue-300">
-            Home
-          </Link>
           <Link to="/stock" className="hover:text-blue-300">
             Stock
           </Link>
