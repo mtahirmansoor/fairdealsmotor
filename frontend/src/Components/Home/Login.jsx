@@ -1,66 +1,74 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Use useNavigate
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // for navigation after login
 
 const Login = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const navigate = useNavigate(); // Initialize useNavigate
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const userData = {
-            user: username, // replace with your username state variable
-            pwd: password, // replace with your password state variable
-        };
+  // Hardcoded credentials
+  const validUsername = "Ali123@gmail.com";
+  const validPassword = "Ali123313";
 
-        try {
-            const response = await axios.post('http://localhost:5000/api/login', userData);
-            console.log('Login successful:', response.data);
-            // Redirect to admin page on successful login
-            navigate('/admin'); // Use navigate instead of history.push
-        } catch (error) {
-            console.error('Error during login:', error.response.data); // Updated for more specific logging
-        }
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    // Check credentials
+    if (username === validUsername && password === validPassword) {
+      // Store the login status in localStorage
+      localStorage.setItem("loggedIn", "true");
 
-    return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="container mx-auto max-w-md bg-white shadow-lg rounded-lg p-8">
-                <h2 className="text-2xl font-semibold text-center mb-6">Admin Login</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Username</label>
-                        <input
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                            placeholder="Enter your username"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Password</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                            placeholder="Enter your password"
-                            required
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300"
-                    >
-                        Login
-                    </button>
-                </form>
-            </div>
+      // Redirect to the admin page if successful
+      navigate("/admin");
+    } else {
+      setError("Invalid username or password");
+    }
+  };
+
+  return (
+    <div className="container mx-auto p-6">
+      <h2 className="text-2xl font-semibold mb-4">Login</h2>
+      <form onSubmit={handleSubmit} className="max-w-sm mx-auto">
+        <div className="mb-4">
+          <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+            Username
+          </label>
+          <input
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="mt-2 p-2 w-full border border-gray-300 rounded-lg"
+            required
+          />
         </div>
-    );
+
+        <div className="mb-4">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            Password
+          </label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="mt-2 p-2 w-full border border-gray-300 rounded-lg"
+            required
+          />
+        </div>
+
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
+        >
+          Login
+        </button>
+      </form>
+    </div>
+  );
 };
 
 export default Login;

@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaTiktok } from "react-icons/fa";
-import { FaFacebook } from "react-icons/fa"; // Import Facebook icon
-import { FaYoutube } from "react-icons/fa"; // Import YouTube icon
-import Logo from "../assets/Logo/Logow.png";
+import {
+  FaTiktok,
+  FaFacebook,
+  FaYoutube,
+  FaEnvelope,
+  FaPhone,
+} from "react-icons/fa"; // Import YouTube icon
+import Logo from "../assets/Logo/Logo1.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +22,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className={`bg-white py-4 px-2 md:px-8 shadow-md ${isOpen ? "h-screen" : ""}`}>
+    <nav className={`bg-white py-4 px-2 md:px-8 shadow-md ${isOpen ? "z-0" : "z-10"}`}>
       {/* Container */}
       <div className="container mx-auto flex items-center justify-between">
         {/* Logo */}
@@ -31,14 +35,23 @@ const Navbar = () => {
         {/* Links for larger screens */}
         <div className="hidden md:flex">
           <ul className="flex list-none gap-7">
+            <Link to="/" className="hover:text-blue-300">
+              Home
+            </Link>
+            <Link to="/SellYourCar" className="hover:text-blue-300">
+              Sell Your Car
+            </Link>
             <Link to="/stock" className="hover:text-blue-300">
               Stock
             </Link>
             <Link to="/finance" className="hover:text-blue-300">
               Finance
             </Link>
+            <Link to="/warranty" className="hover:text-blue-300">
+              Warranty
+            </Link>
             <Link to="/contact" className="hover:text-blue-300">
-              Contact
+              Contact & Directions
             </Link>
           </ul>
         </div>
@@ -46,12 +59,10 @@ const Navbar = () => {
         {/* Right Section (Search, Login, Button) for Desktop */}
         <div className="hidden md:flex items-center space-x-4">
           {/* Search Icon */}
-         
 
           {/* Conditionally Rendered Search Bar */}
-         
+
           {/* Login Link */}
-         
 
           {/* Social Media Icons */}
           <div className="hidden md:flex items-center space-x-4">
@@ -125,16 +136,59 @@ const Navbar = () => {
 
       {/* Mobile Sidebar (Menu) - Show when isOpen is true */}
       {isOpen && (
-        <div className="flex flex-col gap-4 md:p-4">
-          <Link to="/stock" className="hover:text-blue-300">
-            Stock
-          </Link>
-          <Link to="/finance" className="hover:text-blue-300">
-            Finance
-          </Link>
-          <Link to="/contact" className="hover:text-blue-300">
-            Contact
-          </Link>
+        <div className="flex flex-col gap-4 md:p-4 z-0 relative bg-white">
+          {" "}
+          {/* Added z-0 and relative */}
+          <Link to="/" className="hover:text-blue-300">
+              Home
+            </Link>
+            <Link to="/SellYourCar" className="hover:text-blue-300">
+            Sell Your Car
+</Link>
+            <Link to="/stock" className="hover:text-blue-300">
+              Stock
+            </Link>
+            <Link to="/finance" className="hover:text-blue-300">
+              Finance
+            </Link>
+            <Link to="/warranty" className="hover:text-blue-300">
+              Warranty
+            </Link>
+            <Link to="/contact" className="hover:text-blue-300">
+              Contact & Directions
+            </Link>
+          {/* Email and Phone Number Section */}
+          <div className="flex flex-col space-y-2 text-gray-700">
+            <div className="flex items-center">
+              <FaEnvelope className="mr-2 text-blue-500" />
+              <a
+                href="mailto:Fairdealsmotor@gmail.com"
+                className="text-blue-500 hover:underline"
+              >
+                Fairdealsmotor@gmail.com
+              </a>
+            </div>
+            <div className="flex items-center">
+              <FaPhone className="mr-2 text-blue-500" />
+              <a
+                href="tel:+447398524761"
+                className="text-blue-500 hover:underline"
+              >
+                +44 7398 524761
+              </a>
+            </div>
+            <div className="flex items-center space-x-4 mt-4">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-gray-400">
+              <FaFacebook size={20} />
+            </a>
+            <a href="https://youtube.com/@fairdealsmotorlimited?si=M6CxVn_S4PM_fTBF" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-gray-400">
+              <FaYoutube size={20} />
+            </a>
+            <a href="https://www.tiktok.com/@fair.deals.motor?_t=8qlBMiiXN2H&_r=1" target="_blank" rel="noopener noreferrer" className="text-black hover:text-gray-400">
+              <FaTiktok size={20} />
+            </a>
+          </div>
+          </div>
         </div>
       )}
     </nav>

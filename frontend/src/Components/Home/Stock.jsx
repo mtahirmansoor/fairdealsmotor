@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Stock = () => {
   const [cars, setCars] = useState([]);
@@ -10,15 +11,34 @@ const Stock = () => {
     const fetchCars = async () => {
       try {
         const response = await axios.get("http://localhost:3000/api/cars");
-        const carsWithParsedImages = response.data.map((car) => ({
-          ...car,
-          images: Array.isArray(car.images)
-            ? car.images
-            : typeof car.images === "string"
-            ? JSON.parse(car.images)
-            : [],
-        }));
+        console.log("Fetched Cars:", response.data); // Log entire response to check data
 
+        const carsWithParsedImages = response.data.map((car) => {
+          let parsedImages = [];
+
+          // Check if the images are a stringified JSON array with an additional level of stringification
+          if (typeof car.images === "string") {
+            try {
+              // First parse: removes the outer string quotes
+              const firstParse = JSON.parse(car.images);
+              // Second parse: parses the inner JSON array
+              parsedImages = JSON.parse(firstParse);
+            } catch (e) {
+              console.error("Error parsing images:", e);
+              parsedImages = []; // Fallback to empty array on error
+            }
+          } else if (Array.isArray(car.images)) {
+            parsedImages = car.images; // Already an array, no need to parse
+          }
+
+          // Ensure images is always an array
+          return {
+            ...car,
+            images: parsedImages,
+          };
+        });
+
+        console.log("Processed Cars with Images:", carsWithParsedImages); // Log the processed data
         setCars(carsWithParsedImages);
       } catch (err) {
         setError(err.message);
@@ -30,29 +50,19 @@ const Stock = () => {
     fetchCars();
   }, []);
 
-  const handleDelete = async (carId) => {
-    try {
-      await axios.delete(`http://localhost:3000/api/cars/${carId}`);
-      setCars(cars.filter((car) => car.id !== carId));
-    } catch (err) {
-      console.error("Error deleting car:", err);
-    }
-  };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  if (loading)
-    return (
-      <div className="text-center text-xl font-semibold mt-10">Loading...</div>
-    );
-  if (error)
-    return (
-      <div className="text-center text-red-500 text-xl mt-10">
-        Error: {error}
-      </div>
-    );
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">Car List</h1>
+      <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">
+        Car List
+      </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {cars.map((car) => (
           <div
@@ -75,21 +85,29 @@ const Stock = () => {
                 </div>
               )}
             </div>
-
             <div className="p-4 flex-1">
-              <h2 className="text-2xl font-semibold text-gray-800">
+              <div className="flex justify-between items-center">
+                <h2 className="text-green-500 font-bold text-gray-800">
+                  £{car.price}
+                </h2>
+              </div>
+              <p className="font-semibold text-xl">
                 {car.make} {car.model} ({car.year})
-              </h2>
-              <p className="text-gray-600 mt-1">
-                Price:{" "}
-                <span className="text-green-500 font-semibold">${car.price}</span>
               </p>
-              <p className="text-gray-600">Mileage: {car.mileage} miles</p>
+              <p className="text-gray-600 mt-1">Mileage: {car.mileage} miles</p>
               <p className="text-gray-600">Color: {car.color}</p>
               <p className="text-gray-600">Fuel Type: {car.fuel_type}</p>
               <p className="text-gray-600">Condition: {car.carcondition}</p>
-
-             
+              <div className="mt-4">
+                <Link
+                  to={`/MoreInfo/${car.id}`}
+                  className="text-blue-500 hover:underline"
+                >
+                  <button className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">
+                    More Info
+                  </button>
+                </Link>
+              </div>
             </div>
           </div>
         ))}

@@ -15,16 +15,17 @@ const EditCars = ({ carId }) => {
     engine_size: "",
     features: "",
     carcondition: "",
+    vehicle_description: "", // Ensure this is included if needed
   });
-  const [images, setImages] = useState([]); // State to hold new uploaded images
-  const [existingImages, setExistingImages] = useState([]); // State to hold existing images
+  const [images, setImages] = useState([]); // New images to upload
+  const [existingImages, setExistingImages] = useState([]); // Existing images
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/api/cars/${carId}`)
+      .get(`${process.env.REACT_APP_API_URL}/api/cars/${carId}`)
       .then((response) => {
         setCar(response.data);
-        // Parse images safely, ensuring it's always an array
+        // Parse images from the response if available, ensure it's an array
         const imagesFromResponse = response.data.images ? JSON.parse(response.data.images) : [];
         setExistingImages(imagesFromResponse);
       })
@@ -35,17 +36,19 @@ const EditCars = ({ carId }) => {
     e.preventDefault();
     
     const formData = new FormData();
+    
     // Append car data to FormData
     Object.keys(car).forEach((key) => {
       formData.append(key, car[key]);
     });
+
     // Append new images to FormData
     images.forEach((image) => {
       formData.append("images", image);
     });
 
     axios
-      .put(`http://localhost:3000/api/cars/${carId}`, formData)
+      .put(`${process.env.REACT_APP_API_URL}/api/cars/${carId}`, formData)
       .then((response) => {
         console.log(response.data);
         alert('Car updated successfully!');
@@ -60,6 +63,7 @@ const EditCars = ({ carId }) => {
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4 text-center">Edit Car</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Form Fields */}
         {Object.keys(car).map((key) => (
           <div key={key}>
             <input
@@ -72,6 +76,8 @@ const EditCars = ({ carId }) => {
             />
           </div>
         ))}
+
+        {/* File Upload */}
         <div>
           <input
             type="file"
@@ -80,6 +86,8 @@ const EditCars = ({ carId }) => {
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
           />
         </div>
+
+        {/* Display Existing Images */}
         {Array.isArray(existingImages) && existingImages.length > 0 && (
           <div className="mt-4">
             <h3 className="text-lg font-semibold">Existing Images:</h3>
@@ -87,7 +95,7 @@ const EditCars = ({ carId }) => {
               {existingImages.map((image, index) => (
                 <img
                   key={index}
-                  src={`http://localhost:3000/uploads/${image}`} // Adjust based on your actual URL setup
+                  src={`${process.env.REACT_APP_API_URL}/uploads/${image}`} // Adjust for dynamic URL
                   alt={`Car Image ${index}`}
                   className="w-32 h-32 object-cover rounded-md"
                 />
@@ -95,6 +103,8 @@ const EditCars = ({ carId }) => {
             </div>
           </div>
         )}
+
+        {/* Submit Button */}
         <button
           type="submit"
           className="w-full p-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-200"
